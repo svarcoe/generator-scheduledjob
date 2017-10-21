@@ -1,0 +1,9 @@
+{
+  "generator-node": {
+    "promptValues": {
+      "authorName": "Scott Varcoe",
+      "authorEmail": "svarcoe@gmail.com",
+      "authorUrl": ""
+    }
+  }
+}
