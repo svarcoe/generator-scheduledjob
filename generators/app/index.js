@@ -4,6 +4,18 @@ const chalk = require('chalk');
 const yosay = require('yosay');
 
 module.exports = class extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
+    this.argument('projectName', {
+      desc: 'Name of project',
+      required: true
+    });
+  }
+
+  configuring() {
+    this.config.save();
+  }
+
   prompting() {
     // Have Yeoman greet the user.
     this.log(
@@ -13,12 +25,12 @@ module.exports = class extends Generator {
     );
 
     const prompts = [
-      {
-        type: 'confirm',
-        name: 'someAnswer',
-        message: 'Would you like to enable this option?',
-        default: true
-      }
+      // {
+      //   type: 'input',
+      //   name: 'projectName',
+      //   message: 'Your project name',
+      //   default: path.basename(process.cwd())
+      // }
     ];
 
     return this.prompt(prompts).then(props => {
@@ -29,12 +41,15 @@ module.exports = class extends Generator {
 
   writing() {
     this.fs.copy(
-      this.templatePath('dummyfile.txt'),
-      this.destinationPath('dummyfile.txt')
+      this.templatePath('templates.csproj'),
+      this.destinationPath(this.options.projectName + '.csproj')
     );
+    this.fs.copyTpl(this.templatePath('Program.cs'), this.destinationPath('Program.cs'), {
+      projectName: this.options.projectName
+    });
   }
 
   install() {
-    this.installDependencies();
+    this.spawnCommand('dotnet', ['build']);
   }
 };
